@@ -117,10 +117,11 @@ class GAN():
                     batch_y = train_y[batch * self.batch_size: (batch + 1) * self.batch_size]  # [batch_size,]
                     noise = self.random_noise(self.batch_size)  # [batch_size, 128]
 
-                    sess.run(g_train, feed_dict={self.Z: noise})
-                    sess.run(d_train, feed_dict={self.X: batch_x, self.Z: noise})
+                    # sess.run(g_train, feed_dict={self.Z: noise})
+                    #  _, gl = sess.run([g_train, g_loss], feed_dict={Z: noise})
 
-                    gl, dl = sess.run([g_loss, d_loss], feed_dict={X: batch_x, Z: noise})
+                    _, gl = sess.run([g_train, g_loss], feed_dict={self.Z: noise})
+                    _, dl= sess.run([d_train, d_loss], feed_dict={self.X:batch_x, self.Z: noise})
 
                 # check every 20 epoch
                 if (epoch + 1) % 20 == 0 or epoch == 1:
@@ -133,7 +134,7 @@ class GAN():
                 if epoch == 0 or (epoch + 1) % 10 == 0:
                     sample_noise = self.random_noise(10)
 
-                    generated = sess.run(generated_fake_image, feed_dict={Z: sample_noise})
+                    generated = sess.run(generated_fake_image, feed_dict={self.Z: sample_noise})
 
                     fig, ax = plt.subplots(1, 10, figsize=(10, 1))
                     for i in range(10):
